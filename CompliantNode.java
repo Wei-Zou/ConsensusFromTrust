@@ -6,6 +6,7 @@ import java.util.Set;
 
 /* CompliantNode refers to a node that follows the rules (not malicious)*/
 public class CompliantNode implements Node {
+    private static final int REPETITION_CRITERIA = 2;
 
     private boolean[] followees;
     private Set<Transaction> proposalTransactions = new HashSet<Transaction>();
@@ -71,8 +72,19 @@ public class CompliantNode implements Node {
             if (!followees[sender]) {
                 continue;
             }
+
             if (trustedFollowees.contains(sender)) {
-                proposalTransactions.add(candidate.tx);
+                Transaction candidateTx = candidate.tx;
+                int txId = candidateTx.id;
+
+                if (txRepetition.containsKey(txId)) {
+                    txRepetition.put(txId, txRepetition.get(txId) + 1);
+                    if (txRepetition.get(txId) >= REPETITION_CRITERIA) {
+                        proposalTransactions.add(candidateTx);
+                    }
+                } else {
+                    txRepetition.put(txId, 1);
+                }
             }
         }
     }
