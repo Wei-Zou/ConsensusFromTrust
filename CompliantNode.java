@@ -4,15 +4,15 @@ import java.util.Set;
 
 /* CompliantNode refers to a node that follows the rules (not malicious)*/
 public class CompliantNode implements Node {
-    private static final int REPETITION_CRITERIA = 2;
+    private int REPETITION_CRITERIA;
 
     private boolean[] followees;
-    private Set<Transaction> initTransactions;
     private Set<Transaction> proposalTransactions = new HashSet<Transaction>();
     private HashMap<Integer, Integer> txRepetition = new HashMap<Integer, Integer>();
 
     public CompliantNode(double p_graph, double p_malicious, double p_txDistribution, int numRounds) {
-        // IMPLEMENT THIS
+        double index = Math.pow(p_graph, 3) * Math.pow(p_malicious, 5) * p_txDistribution * numRounds * Math.pow(10, 5);
+        REPETITION_CRITERIA = index >= 1 ? 4 : 3;
     }
 
     public void setFollowees(boolean[] followees) {
@@ -20,7 +20,6 @@ public class CompliantNode implements Node {
     }
 
     public void setPendingTransaction(Set<Transaction> pendingTransactions) {
-        initTransactions = pendingTransactions;
         proposalTransactions.addAll(pendingTransactions);
         for (Transaction tx: pendingTransactions) {
             txRepetition.put(tx.id, 1);
